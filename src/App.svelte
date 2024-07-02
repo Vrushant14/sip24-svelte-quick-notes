@@ -37,12 +37,22 @@
   }
 
   function deleteNote() {
+    console.log(currentPageIndex);
     const currentPageTitle = pages[currentPageIndex];
-    localStorage.removeItem(currentPageTitle);
-    pages.splice(currentPageIndex, 1);
-    selectPage(pages.length ? pages.length - 1 : null);
-    localStorage.setItem("pages", JSON.stringify(pages));
-    
+    if (currentPageIndex != pages.length - 1) {
+      for (let i = currentPageIndex; i < pages.length; i++) {
+        pages[i] = pages[i + 1];
+      }
+      pages.splice(pages.length - 1, 1);
+      localStorage.removeItem(currentPageTitle);
+      selectPage(pages.length ? pages.length - 1 : null);
+      localStorage.setItem("pages", JSON.stringify(pages));
+    } else {
+      pages.splice(currentPageIndex, 1);
+      localStorage.removeItem(currentPageTitle);
+      localStorage.setItem("pages", JSON.stringify(pages));
+      selectPage(pages.length ? pages.length - 1 : null);
+    }
   }
 </script>
 
@@ -86,7 +96,7 @@
         on:click={savenote}>Save</button
       >
       <button
-        class="ml-0  bg-red-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm mt-3 hover:bg-gray-500"
+        class="ml-0 bg-red-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm mt-3 hover:bg-gray-500"
         on:click={deleteNote}>Delete</button
       >
     </div>
@@ -95,7 +105,6 @@
     class="mt-3 block w-full bg-gray-50 border border-gray-300 rounded-lg text-gray-900 p-2.5"
     bind:value={note}
   ></textarea>
-
 </main>
 
 <style>
@@ -134,7 +143,7 @@
     text-align: center;
   }
 
-  .divsavedelete{
+  .divsavedelete {
     display: flex;
     text-align: right;
   }
